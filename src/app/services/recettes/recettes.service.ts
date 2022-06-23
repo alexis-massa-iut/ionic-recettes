@@ -62,6 +62,10 @@ export class RecettesService {
     });
   }
 
+  /**
+   * Supprimer une recette
+   * @param recetteId : id de la recette à supprimer
+   */
   deleteRecette(recetteId: string) {
     this.recettes = this.recettes.filter(recette => {
       return recette.id !== recetteId;

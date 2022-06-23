@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecettesService } from '../../services/recettes/recettes.service';
 import { PhotoService } from 'src/app/services/photo/photo.service';
 import { Recette } from '../../model/recette.model';
+
 import { AlertController, ToastController } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-recette-detail',
@@ -18,7 +20,8 @@ export class RecetteDetailPage implements OnInit {
     private router: Router,
     private alertCtrl: AlertController, // Controlleur pour créer une alerte
     private photoService: PhotoService, // Composant pour prendre une photo
-    private toastController: ToastController // Controlleur pour créer un toast
+    private toastController: ToastController, // Controlleur pour créer un toast
+    private inAppBrowser: InAppBrowser // Composant pour ouvrir une page dans un navigateur
   ) { }
 
   ngOnInit() {
@@ -50,6 +53,10 @@ export class RecetteDetailPage implements OnInit {
       );
   }
 
+  onConsultRecette() { // Consulter la recette
+    const browser = this.inAppBrowser.create(this.recette.urlRecette);
+    browser.show();
+  }
 
   onDeleteRecette() { // Supprimer la recette
     this.alertCtrl.create({

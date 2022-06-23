@@ -3,4 +3,5 @@ export interface Recette {
     titre: string;
     image: string;
     ingredients: string[];
+    urlRecette?: string;
 }

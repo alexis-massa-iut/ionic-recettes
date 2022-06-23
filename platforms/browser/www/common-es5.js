@@ -181,7 +181,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <img [src]=\"recette.image\"/>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>";
       /***/
     },
 
@@ -447,11 +447,18 @@
       var _ionic_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
       /*! @ionic/angular */
       "TEn/");
+      /* harmony import */
+
+
+      var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+      /*! @ionic-native/in-app-browser/ngx */
+      "m/P+");
 
       var RecetteDetailPage = /*#__PURE__*/function () {
         function RecetteDetailPage(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
         photoService, // Composant pour prendre une photo
-        toastController // Controlleur pour créer un toast
+        toastController, // Controlleur pour créer un toast
+        inAppBrowser // Composant pour ouvrir une page dans un navigateur
         ) {
           _classCallCheck(this, RecetteDetailPage);
 
@@ -461,6 +468,7 @@
           this.alertCtrl = alertCtrl;
           this.photoService = photoService;
           this.toastController = toastController;
+          this.inAppBrowser = inAppBrowser;
         }
 
         _createClass(RecetteDetailPage, [{
@@ -506,6 +514,12 @@
             });
           }
         }, {
+          key: "onConsultRecette",
+          value: function onConsultRecette() {
+            var browser = this.inAppBrowser.create(this.recette.urlRecette);
+            browser.show();
+          }
+        }, {
           key: "onDeleteRecette",
           value: function onDeleteRecette() {
             var _this3 = this;
@@ -546,6 +560,8 @@
           type: src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__["PhotoService"]
         }, {
           type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"]
+        }, {
+          type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"]
         }];
       };
 
@@ -964,6 +980,11 @@
               return recetteExistante;
             });
           }
+          /**
+           * Supprimer une recette
+           * @param recetteId : id de la recette à supprimer
+           */
+
         }, {
           key: "deleteRecette",
           value: function deleteRecette(recetteId) {
