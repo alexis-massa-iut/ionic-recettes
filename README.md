@@ -10,13 +10,29 @@ npm i -g ionic@4
 npm i
 ionic build
 ionic cordova platform add android@9
+ionic cordova platform add browser # Necessary for camera plugin
+```
+
+### Camera plugin
+```bash
+ionic cordova plugin add cordova-plugin-camera 
+npm install @ionic-native/camera
+```
+
+### Toast plugin
+```bash
+ionic cordova plugin add cordova-plugin-x-toast 
+npm install @ionic-native/toast@4
 ```
 # Start project
-
-## Browser
-
+## Default (Camera won't work on browser)
 ```bash
 ionic serve
+```
+
+## Browser
+```bash
+ionic cordova run browser
 ```
 ## Android
 

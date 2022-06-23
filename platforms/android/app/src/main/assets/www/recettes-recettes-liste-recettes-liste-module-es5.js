@@ -187,7 +187,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-item  [routerLink]=\"['/recette-detail', recette.id]\">\n  <ion-avatar slot=\"start\">\n    <ion-img [src]=\"recette.visuel\"></ion-img>\n  </ion-avatar>\n  <ion-label>{{ recette.titre }}</ion-label>\n</ion-item>\n";
+      __webpack_exports__["default"] = "<ion-item  [routerLink]=\"['/recette-detail', recette.id]\">\n  <ion-avatar slot=\"start\">\n    <ion-img [src]=\"recette.image\"></ion-img>\n  </ion-avatar>\n  <ion-label>{{ recette.titre }}</ion-label>\n</ion-item>\n";
       /***/
     },
 
@@ -338,7 +338,7 @@
 
 
       var _services_recettes_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
-      /*! ../../services/recettes.service */
+      /*! ../../services/recettes/recettes.service */
       "h/rU");
 
       var RecettesListePage = /*#__PURE__*/function () {

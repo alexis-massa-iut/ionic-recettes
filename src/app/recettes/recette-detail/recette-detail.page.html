@@ -5,6 +5,9 @@
     </ion-buttons>
     <ion-title>{{recette.titre}}</ion-title>
     <ion-buttons slot="primary">
+      <ion-button (click)="onUpdatePicture();">
+        <ion-icon name="camera" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="onDeleteRecette();">
         <ion-icon name="trash" slot="icon-only"></ion-icon>
       </ion-button>
@@ -16,8 +19,9 @@
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col class="ion-no-padding">
-        <ion-img [src]="recette.visuel"></ion-img>
+        <ion-img [src]="recette.image"></ion-img>
       </ion-col>
+
     </ion-row>
     <ion-row>
       <ion-col>

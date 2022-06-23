@@ -101,7 +101,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ion-item  [routerLink]=\"['/recette-detail', recette.id]\">\n  <ion-avatar slot=\"start\">\n    <ion-img [src]=\"recette.visuel\"></ion-img>\n  </ion-avatar>\n  <ion-label>{{ recette.titre }}</ion-label>\n</ion-item>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ion-item  [routerLink]=\"['/recette-detail', recette.id]\">\n  <ion-avatar slot=\"start\">\n    <ion-img [src]=\"recette.image\"></ion-img>\n  </ion-avatar>\n  <ion-label>{{ recette.titre }}</ion-label>\n</ion-item>\n");
 
 /***/ }),
 
@@ -176,7 +176,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _raw_loader_recettes_liste_page_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! raw-loader!./recettes-liste.page.html */ "SqHW");
 /* harmony import */ var _recettes_liste_page_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./recettes-liste.page.scss */ "C6NY");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
-/* harmony import */ var _services_recettes_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/recettes.service */ "h/rU");
+/* harmony import */ var _services_recettes_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/recettes/recettes.service */ "h/rU");
 
 
 

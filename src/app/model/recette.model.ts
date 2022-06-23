@@ -1,6 +1,6 @@
 export interface Recette {
     id: string;
     titre: string;
-    visuel: string;
+    image: string;
     ingredients: string[];
 }
