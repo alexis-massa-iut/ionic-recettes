@@ -181,7 +181,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button *ngIf=\"this.recette.urlRecette\" (click)=\"onOpenUrl()\">Voir la recette</ion-button>\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>";
       /***/
     },
 
@@ -453,12 +453,19 @@
       var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
       /*! @ionic-native/in-app-browser/ngx */
       "m/P+");
+      /* harmony import */
+
+
+      var _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
+      /*! @ionic-native/native-storage/ngx */
+      "M2ZX");
 
       var RecetteDetailPage = /*#__PURE__*/function () {
         function RecetteDetailPage(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
         photoService, // Composant pour prendre une photo
         toastController, // Controlleur pour créer un toast
-        inAppBrowser // Composant pour ouvrir une page dans un navigateur
+        inAppBrowser, // Composant pour ouvrir une page dans un navigateur
+        nativeStorage // Composant pour stocker des données
         ) {
           _classCallCheck(this, RecetteDetailPage);
 
@@ -469,6 +476,7 @@
           this.photoService = photoService;
           this.toastController = toastController;
           this.inAppBrowser = inAppBrowser;
+          this.nativeStorage = nativeStorage;
         }
 
         _createClass(RecetteDetailPage, [{
@@ -495,6 +503,10 @@
               }
             });
           }
+          /**
+           * Méthode pour prendre une photo
+           */
+
         }, {
           key: "onUpdatePicture",
           value: function onUpdatePicture() {
@@ -513,12 +525,20 @@
               });
             });
           }
+          /**
+           * Méthode pour ouvrir le lien recette
+           */
+
         }, {
           key: "onConsultRecette",
           value: function onConsultRecette() {
             var browser = this.inAppBrowser.create(this.recette.urlRecette);
             browser.show();
           }
+          /**
+           * Méthode pour stocker la recette dans le localStorage
+           */
+
         }, {
           key: "onDeleteRecette",
           value: function onDeleteRecette() {
@@ -540,7 +560,16 @@
               }]
             }).then(function (alertEl) {
               alertEl.present();
-            });
+            }); // TODO: supprimer la recette
+          }
+          /**
+           * Ouvrir l'url de la recette dans un nouvel ounglet
+           */
+
+        }, {
+          key: "onOpenUrl",
+          value: function onOpenUrl() {
+            this.inAppBrowser.create(this.recette.urlRecette);
           }
         }]);
 
@@ -562,6 +591,8 @@
           type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"]
         }, {
           type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"]
+        }, {
+          type: _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__["NativeStorage"]
         }];
       };
 
@@ -940,20 +971,33 @@
             id: 'pizza',
             titre: 'Pizza Regina',
             image: 'https://img-3.journaldesfemmes.fr/w7YT75LG3R5TKLmLwyugJucwYh8=/748x499/smart/3fe7f1f6a26c4921b9f3150e129b358b/recipe-jdf/326376.jpg',
-            ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette']
+            ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette'],
+            urlRecette: 'https://cuisine.journaldesfemmes.fr/recette-pizza'
           }, {
             id: 'tofu',
             titre: 'Tofu Mariné',
             image: 'https://www.aufouraumoulin.com/wp-content/uploads/2015/01/tofu_marine_grille-4.jpg',
-            ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger']
+            ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger'],
+            urlRecette: 'https://www.marmiton.org/recettes/recette_tofu-marine_32904.aspx'
           }];
         }
+        /**
+         * Récupérer toutes les recettes
+         * @returns toutes les recettes
+         */
+
 
         _createClass(RecettesService, [{
           key: "getAllRecettes",
           value: function getAllRecettes() {
             return _toConsumableArray(this.recettes); // on utilise l'opérateur de décomposition (...) pour cloner le tableau
           }
+          /**
+           * Récupérer une recette par son id
+           * @param recetteId : id de la recette à récupérer
+           * @returns Recette correspondante
+           */
+
         }, {
           key: "getRecette",
           value: function getRecette(recetteId) {
@@ -978,7 +1022,7 @@
               }
 
               return recetteExistante;
-            });
+            }); //TODO: mettre à jour la recette dans la base de données
           }
           /**
            * Supprimer une recette
@@ -990,7 +1034,7 @@
           value: function deleteRecette(recetteId) {
             this.recettes = this.recettes.filter(function (recette) {
               return recette.id !== recetteId;
-            });
+            }); //TODO: supprimer la recette dans la base de données
           }
         }]);
 

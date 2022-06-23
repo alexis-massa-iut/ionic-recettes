@@ -6,6 +6,7 @@ import { Recette } from '../../model/recette.model';
 
 import { AlertController, ToastController } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-recette-detail',
@@ -21,7 +22,8 @@ export class RecetteDetailPage implements OnInit {
     private alertCtrl: AlertController, // Controlleur pour créer une alerte
     private photoService: PhotoService, // Composant pour prendre une photo
     private toastController: ToastController, // Controlleur pour créer un toast
-    private inAppBrowser: InAppBrowser // Composant pour ouvrir une page dans un navigateur
+    private inAppBrowser: InAppBrowser, // Composant pour ouvrir une page dans un navigateur
+    private nativeStorage: NativeStorage // Composant pour stocker des données
   ) { }
 
   ngOnInit() {
@@ -38,6 +40,9 @@ export class RecetteDetailPage implements OnInit {
     });
   }
 
+  /**
+   * Méthode pour prendre une photo
+   */
   onUpdatePicture() { // Prendre une photo
     this.photoService.takePicture()
       .then(ImageData => {
@@ -53,11 +58,17 @@ export class RecetteDetailPage implements OnInit {
       );
   }
 
+  /**
+   * Méthode pour ouvrir le lien recette
+   */
   onConsultRecette() { // Consulter la recette
     const browser = this.inAppBrowser.create(this.recette.urlRecette);
     browser.show();
   }
 
+  /**
+   * Méthode pour stocker la recette dans le localStorage
+   */
   onDeleteRecette() { // Supprimer la recette
     this.alertCtrl.create({
       header: 'Confirmation',
@@ -74,5 +85,14 @@ export class RecetteDetailPage implements OnInit {
     }).then(alertEl => {
       alertEl.present();
     });
+    // TODO: supprimer la recette
   }
+
+  /**
+   * Ouvrir l'url de la recette dans un nouvel ounglet
+   */
+  onOpenUrl() {
+    this.inAppBrowser.create(this.recette.urlRecette);
+  }
+
 }
