@@ -440,6 +440,17 @@
             return m.RecetteDetailPageModule;
           });
         }
+      }, {
+        path: 'recette-create',
+        loadChildren: function loadChildren() {
+          return Promise.all(
+          /*! import() | recettes-recette-create-recette-create-module */
+          [__webpack_require__.e("common"), __webpack_require__.e("recettes-recette-create-recette-create-module")]).then(__webpack_require__.bind(null,
+          /*! ./recettes/recette-create/recette-create.module */
+          "wKX/")).then(function (m) {
+            return m.RecetteCreatePageModule;
+          });
+        }
       }];
 
       var AppRoutingModule = function AppRoutingModule() {

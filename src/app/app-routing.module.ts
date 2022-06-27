@@ -1,25 +1,16 @@
-import {NgModule} from '@angular/core';
-import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'recettes-liste',
-    pathMatch: 'full'
-  },
-  {
-    path: 'recettes-liste',
-    loadChildren: () => import('./recettes/recettes-liste/recettes-liste.module').then(m => m.RecettesListePageModule)
-  },
-  {
-    path: 'recette-detail/:recetteId',
-    loadChildren: () => import('./recettes/recette-detail/recette-detail.module').then(m => m.RecetteDetailPageModule)
-  }
+  { path: '', redirectTo: 'recettes-liste', pathMatch: 'full' },
+  { path: 'recettes-liste', loadChildren: () => import('./recettes/recettes-liste/recettes-liste.module').then(m => m.RecettesListePageModule) },
+  { path: 'recette-detail/:recetteId', loadChildren: () => import('./recettes/recette-detail/recette-detail.module').then(m => m.RecetteDetailPageModule) },
+  { path: 'recette-create', loadChildren: () => import('./recettes/recette-create/recette-create.module').then(m => m.RecetteCreatePageModule) }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
 })

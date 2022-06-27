@@ -420,19 +420,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const routes = [
-    {
-        path: '',
-        redirectTo: 'recettes-liste',
-        pathMatch: 'full'
-    },
-    {
-        path: 'recettes-liste',
-        loadChildren: () => Promise.all(/*! import() | recettes-recettes-liste-recettes-liste-module */[__webpack_require__.e("common"), __webpack_require__.e("recettes-recettes-liste-recettes-liste-module")]).then(__webpack_require__.bind(null, /*! ./recettes/recettes-liste/recettes-liste.module */ "U8H0")).then(m => m.RecettesListePageModule)
-    },
-    {
-        path: 'recette-detail/:recetteId',
-        loadChildren: () => __webpack_require__.e(/*! import() | recettes-recette-detail-recette-detail-module */ "common").then(__webpack_require__.bind(null, /*! ./recettes/recette-detail/recette-detail.module */ "V/fZ")).then(m => m.RecetteDetailPageModule)
-    }
+    { path: '', redirectTo: 'recettes-liste', pathMatch: 'full' },
+    { path: 'recettes-liste', loadChildren: () => Promise.all(/*! import() | recettes-recettes-liste-recettes-liste-module */[__webpack_require__.e("common"), __webpack_require__.e("recettes-recettes-liste-recettes-liste-module")]).then(__webpack_require__.bind(null, /*! ./recettes/recettes-liste/recettes-liste.module */ "U8H0")).then(m => m.RecettesListePageModule) },
+    { path: 'recette-detail/:recetteId', loadChildren: () => __webpack_require__.e(/*! import() | recettes-recette-detail-recette-detail-module */ "common").then(__webpack_require__.bind(null, /*! ./recettes/recette-detail/recette-detail.module */ "V/fZ")).then(m => m.RecetteDetailPageModule) },
+    { path: 'recette-create', loadChildren: () => Promise.all(/*! import() | recettes-recette-create-recette-create-module */[__webpack_require__.e("common"), __webpack_require__.e("recettes-recette-create-recette-create-module")]).then(__webpack_require__.bind(null, /*! ./recettes/recette-create/recette-create.module */ "wKX/")).then(m => m.RecetteCreatePageModule) }
 ];
 let AppRoutingModule = class AppRoutingModule {
 };

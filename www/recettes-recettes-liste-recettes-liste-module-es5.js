@@ -258,7 +258,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-title>Mes Recettes Favorites</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n  <app-recette-item *ngFor=\"let uneRecette of recettes\" [recette]=\"uneRecette\"></app-recette-item>\n  </ion-list>\n</ion-content>\n";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-title>Mes Recettes Favorites</ion-title>\n    <ion-button slot=\"primary\" [routerLink]=\"['/recette-create']\">\n      <ion-icon name=\"add\"></ion-icon> Créer une Recette\n    </ion-button>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n    <app-recette-item *ngFor=\"let uneRecette of recettes\" [recette]=\"uneRecette\"></app-recette-item>\n  </ion-list>\n</ion-content>";
       /***/
     },
 
@@ -397,8 +397,7 @@
           _classCallCheck(this, RecettesListePage);
 
           this.RecettesService = RecettesService;
-        } // private crée un attribut dans la classe
-
+        }
 
         _createClass(RecettesListePage, [{
           key: "ngOnInit",

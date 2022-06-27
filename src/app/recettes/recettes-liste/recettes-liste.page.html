@@ -1,11 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Mes Recettes Favorites</ion-title>
+    <ion-button slot="primary" [routerLink]="['/recette-create']">
+      <ion-icon name="add"></ion-icon> Créer une Recette
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-  <app-recette-item *ngFor="let uneRecette of recettes" [recette]="uneRecette"></app-recette-item>
+    <app-recette-item *ngFor="let uneRecette of recettes" [recette]="uneRecette"></app-recette-item>
   </ion-list>
 </ion-content>

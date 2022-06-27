@@ -12,7 +12,7 @@ export class RecettesListePage implements OnInit {
 
   recettes: Recette[];
 
-  constructor(private RecettesService: RecettesService) { } // private crée un attribut dans la classe
+  constructor(private RecettesService: RecettesService) { }
 
   ngOnInit() {
   }
