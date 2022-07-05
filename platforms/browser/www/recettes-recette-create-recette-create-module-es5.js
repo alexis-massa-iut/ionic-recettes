@@ -22,7 +22,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar>\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recette-liste\"></ion-back-button>\n      <ion-title>Créer une recette</ion-title>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n<ion-content>\n  <form [formGroup]=\"formRecette\">\n    <ion-grid>\n      <ion-row>\n        <ion-col size-sm=\"6\" offset-sm=\"3\">\n          <ion-item>\n            <ion-label position=\"floating\">Titre</ion-label>\n            <ion-input type=\"text\" autocomplete autocorrect formControlName=\"title\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"6\" offset-sm=\"3\">\n          <ion-item>\n            <ion-label position=\"floating\">Image</ion-label>\n            <ion-input type=\"text\" formControlName=\"image\"></ion-input>\n            <ion-button (click)=\"onUpdatePicture();\">\n              <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n            </ion-button>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"6\" offset-sm=\"3\">\n          <ion-item>\n            <ion-label position=\"floating\">Ingrédients - séparés par des , (virgules)</ion-label>\n            <ion-input type=\"text\" autocorrect formControlName=\"ingredients\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"6\" offset-sm=\"3\">\n          <ion-item>\n            <ion-label position=\"floating\">URL de la recette</ion-label>\n            <ion-input type=\"text\" formControlName=\"urlRecette\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"2\" offset-sm=\"5\">\n          <ion-button color=\"primary\" [disabled]=\"!formRecette.valid\" type=\"submit\" (click)=\"onCreateRecette()\">Submit\n          </ion-button>\n        </ion-col>\n      </ion-row>\n    </ion-grid>\n  </form>\n</ion-content>";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar>\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recette-liste\"></ion-back-button>\n      <ion-title>Créer une recette</ion-title>\n    </ion-buttons>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onCreateRecette()\" [disabled]=\"!formRecette.valid\">\n        <ion-icon name=\"checkmark\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n<ion-content>\n  <form [formGroup]=\"formRecette\">\n    <ion-grid>\n      <ion-row>\n        <ion-col size-sm=\"8\" offset-sm=\"2\">\n          <ion-item>\n            <ion-label position=\"floating\">Titre</ion-label>\n            <ion-input type=\"text\" autocomplete autocorrect formControlName=\"title\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"8\" offset-sm=\"2\">\n          <ion-item>\n            <ion-button color=\"primary\" (click)=\"onAddPicture('library')\" full>\n              <ion-icon name=\"image\" slot=\"icon-only\"></ion-icon>\n              Choisir dans la bibliothèque\n            </ion-button>\n\n            <ion-button color=\"primary\" (click)=\"onAddPicture('camera')\" full>\n              <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n              Prendre une photo\n            </ion-button>\n\n            <ion-img [src]=\"image\"></ion-img>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"8\" offset-sm=\"2\">\n          <ion-item>\n            <ion-label position=\"floating\">Ingrédients - séparés par des , (virgules)</ion-label>\n            <ion-input type=\"text\" autocorrect formControlName=\"ingredients\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"8\" offset-sm=\"2\">\n          <ion-item>\n            <ion-label position=\"floating\">URL de la recette</ion-label>\n            <ion-input type=\"text\" formControlName=\"urlRecette\"></ion-input>\n          </ion-item>\n        </ion-col>\n      </ion-row>\n      <ion-row>\n        <ion-col size-sm=\"2\" offset-sm=\"5\">\n          <ion-button color=\"primary\" [disabled]=\"!formRecette.valid\" type=\"submit\" (click)=\"onCreateRecette()\">Submit\n          </ion-button>\n        </ion-col>\n      </ion-row>\n    </ion-grid>\n  </form>\n</ion-content>";
       /***/
     },
 
@@ -158,9 +158,9 @@
       /* harmony import */
 
 
-      var _ionic_angular__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
-      /*! @ionic/angular */
-      "TEn/");
+      var _angular_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+      /*! @angular/router */
+      "tyNb");
       /* harmony import */
 
 
@@ -176,12 +176,13 @@
 
       var RecetteCreatePage = /*#__PURE__*/function () {
         function RecetteCreatePage(photoService, // Composant pour prendre une photo
-        recettesService, toastController) {
+        recettesService, router) {
           _classCallCheck(this, RecetteCreatePage);
 
           this.photoService = photoService;
           this.recettesService = recettesService;
-          this.toastController = toastController;
+          this.router = router;
+          this.image = 'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png'; // Default image
         }
 
         _createClass(RecetteCreatePage, [{
@@ -201,10 +202,6 @@
                 updateOn: 'change',
                 validators: [_angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required, _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].maxLength(50)]
               }),
-              image: new _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormControl"](null, {
-                updateOn: 'change',
-                validators: [_angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required]
-              }),
               ingredients: new _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormControl"](null, {
                 updateOn: 'change',
                 validators: [_angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required]
@@ -216,33 +213,45 @@
             });
           }
           /**
-           * Méthode pour prendre une photo
+           * Méthode pour upload une photo
+           * @param source (string) : source de la photo
            */
 
         }, {
-          key: "onUpdatePicture",
-          value: function onUpdatePicture() {
+          key: "onAddPicture",
+          value: function onAddPicture(source) {
             var _this = this;
 
-            this.photoService.takePicture().then(function (ImageData) {
-              _this.formRecette.setValue({
-                image: 'data:image/jpeg;base64,' + ImageData
+            if (source === 'camera') {
+              this.photoService.takePicture().then(function (imageData) {
+                _this.image = 'data:image/jpeg;base64,' + imageData;
+
+                _this.formRecette.patchValue({
+                  image: _this.image
+                }); // Image in form input
+
               });
-            })["catch"](function (error) {
-              _this.toastController.create({
-                message: 'Erreur lors de la prise de photo',
-                duration: 3000
-              }).then(function (toast) {
-                return toast.present();
+            } else {
+              this.photoService.uploadPicture().then(function (imageData) {
+                _this.image = 'data:image/jpeg;base64,' + imageData;
+
+                _this.formRecette.patchValue({
+                  image: _this.image
+                }); // Image in form input
+
               });
-            });
+            }
           }
+          /**
+           * Méthode pour créer une recette
+           */
+
         }, {
           key: "onCreateRecette",
           value: function onCreateRecette() {
-            if (this.formRecette.valid) {
-              console.log(this.formRecette); //TODO: créer recette
-            }
+            if (!this.formRecette.valid) return;
+            this.recettesService.createRecette(this.formRecette, this.image);
+            this.router.navigate(['/recettes-liste']);
           }
         }]);
 
@@ -255,7 +264,7 @@
         }, {
           type: src_app_services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_7__["RecettesService"]
         }, {
-          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_5__["ToastController"]
+          type: _angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"]
         }];
       };
 

@@ -6,7 +6,6 @@ import { Recette } from '../../model/recette.model';
 
 import { AlertController, ToastController } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-recette-detail',
@@ -23,7 +22,6 @@ export class RecetteDetailPage implements OnInit {
     private photoService: PhotoService, // Composant pour prendre une photo
     private toastController: ToastController, // Controlleur pour créer un toast
     private inAppBrowser: InAppBrowser, // Composant pour ouvrir une page dans un navigateur
-    private nativeStorage: NativeStorage // Composant pour stocker des données
   ) { }
 
   ngOnInit() {
@@ -54,8 +52,7 @@ export class RecetteDetailPage implements OnInit {
           message: 'Erreur lors de la prise de photo',
           duration: 3000
         }).then(toast => toast.present());
-      }
-      );
+      });
   }
 
   /**

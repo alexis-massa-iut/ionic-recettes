@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
+import { toastController } from '@ionic/core';
 import { Recette } from '../../model/recette.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -35,14 +39,49 @@ export class RecettesService {
     },
   ];
 
-  constructor() { }
+  constructor(private toastController: ToastController) { }
+
+  /**
+   * Créer une nouvelle recette
+   * @param formgroup : Recette à créer
+   */
+  createRecette(formgroup: FormGroup, image: string) {
+    const recette = {
+      id: formgroup.value.title.split(' ').join('_').toLowerCase(),
+      titre: formgroup.value.title,
+      image: image,
+      ingredients: formgroup.value.ingredients.split('\n'),
+      urlRecette: formgroup.value.urlRecette
+    };
+
+    if (window.localStorage.getItem(recette.id) === null) {
+      window.localStorage.setItem(recette.id, JSON.stringify(recette));
+      this.toastController.create({
+        message: 'Recette créée !',
+        duration: 3000
+      }).then(toast => toast.present());
+    } else {
+      this.toastController.create({
+        message: 'Recette déjà existante !',
+        duration: 3000
+      }).then(toast => toast.present());
+    }
+  }
 
   /**
    * Récupérer toutes les recettes
    * @returns toutes les recettes
    */
   getAllRecettes() {
-    return [...this.recettes]; // on utilise l'opérateur de décomposition (...) pour cloner le tableau
+    let recettes = [],
+      keys = Object.keys(localStorage),
+      i = keys.length;
+
+    while (i--) {
+      recettes.push(JSON.parse(localStorage.getItem(keys[i])));
+    }
+    recettes.forEach(recette => { recette.ingredients = recette.ingredients[0].split(','); });
+    return recettes;
   }
 
   /**
@@ -51,27 +90,15 @@ export class RecettesService {
    * @returns Recette correspondante
    */
   getRecette(recetteId: string) {
-    return {
-      ...this.recettes.find( // on utilise l'opérateur de décomposition (...) pour cloner la recette
-        recette => {
-          return recette.id === recetteId;
-        })
-    };
+    return JSON.parse(window.localStorage.getItem(recetteId));
   }
 
   /**
    * Modifier une recette
    * @param recette : Recette à modifier
-   * @returns Recette modifiée
    */
   updateRecette(recette: Recette) {
-    this.recettes = this.recettes.map(recetteExistante => {
-      if (recetteExistante.id === recette.id) {
-        return recette;
-      }
-      return recetteExistante;
-    });
-    //TODO: mettre à jour la recette dans la base de données
+   window.localStorage.setItem(recette.id, JSON.stringify(recette));
   }
 
   /**
@@ -79,10 +106,7 @@ export class RecettesService {
    * @param recetteId : id de la recette à supprimer
    */
   deleteRecette(recetteId: string) {
-    this.recettes = this.recettes.filter(recette => {
-      return recette.id !== recetteId;
-    });
-    //TODO: supprimer la recette dans la base de données
+    window.localStorage.removeItem(recetteId);
   }
 
 }

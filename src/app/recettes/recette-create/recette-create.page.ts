@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { PhotoService } from 'src/app/services/photo/photo.service';
 import { RecettesService } from 'src/app/services/recettes/recettes.service';
 
@@ -11,11 +11,12 @@ import { RecettesService } from 'src/app/services/recettes/recettes.service';
 })
 export class RecetteCreatePage implements OnInit {
   formRecette: FormGroup;
+  image = 'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png'; // Default image
 
   constructor(
     private photoService: PhotoService, // Composant pour prendre une photo
     private recettesService: RecettesService,
-    private toastController: ToastController, // Controlleur pour créer un toast
+    private router: Router
   ) { }
 
   ngOnInit() { this.generateFormValidation(); }
@@ -29,10 +30,6 @@ export class RecetteCreatePage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      image: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required]
-      }),
       ingredients: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
@@ -45,26 +42,30 @@ export class RecetteCreatePage implements OnInit {
   }
 
   /**
-   * Méthode pour prendre une photo
+   * Méthode pour upload une photo
+   * @param source (string) : source de la photo
    */
-  onUpdatePicture() { // Prendre une photo
-    this.photoService.takePicture()
-      .then(ImageData => {
-        this.formRecette.setValue({ image: 'data:image/jpeg;base64,' + ImageData });
-      }
-      ).catch(error => {
-        this.toastController.create({
-          message: 'Erreur lors de la prise de photo',
-          duration: 3000
-        }).then(toast => toast.present());
-      }
-      );
+  onAddPicture(source: String) {
+    if (source === 'camera') {
+      this.photoService.takePicture().then(imageData => {
+        this.image = 'data:image/jpeg;base64,' + imageData;
+        this.formRecette.patchValue({ image: this.image }); // Image in form input
+      });
+    } else {
+      this.photoService.uploadPicture().then(imageData => {
+        this.image = 'data:image/jpeg;base64,' + imageData;
+        this.formRecette.patchValue({ image: this.image }); // Image in form input
+      });
+    }
   }
 
+  /**
+   * Méthode pour créer une recette
+   */
   onCreateRecette() {
-    if (this.formRecette.valid) {
-      console.log(this.formRecette); //TODO: créer recette
-    }
+    if (!this.formRecette.valid) return;
+    this.recettesService.createRecette(this.formRecette, this.image);
+    this.router.navigate(['/recettes-liste']);
   }
 
 }

@@ -19,6 +19,8 @@ export class RecettesListePage implements OnInit {
 
   ionViewWillEnter() {
     this.recettes = this.RecettesService.getAllRecettes();
+    console.log(this.recettes);
+    
   }
 
 }

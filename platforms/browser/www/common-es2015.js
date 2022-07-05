@@ -224,8 +224,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/services/photo/photo.service */ "bG/k");
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
 /* harmony import */ var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @ionic-native/in-app-browser/ngx */ "m/P+");
-/* harmony import */ var _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @ionic-native/native-storage/ngx */ "M2ZX");
-
 
 
 
@@ -239,9 +237,7 @@ let RecetteDetailPage = class RecetteDetailPage {
     constructor(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
     photoService, // Composant pour prendre une photo
     toastController, // Controlleur pour créer un toast
-    inAppBrowser, // Composant pour ouvrir une page dans un navigateur
-    nativeStorage // Composant pour stocker des données
-    ) {
+    inAppBrowser) {
         this.activatedRoute = activatedRoute;
         this.recettesService = recettesService;
         this.router = router;
@@ -249,7 +245,6 @@ let RecetteDetailPage = class RecetteDetailPage {
         this.photoService = photoService;
         this.toastController = toastController;
         this.inAppBrowser = inAppBrowser;
-        this.nativeStorage = nativeStorage;
     }
     ngOnInit() {
         this.activatedRoute.paramMap.subscribe(paramMap => {
@@ -322,8 +317,7 @@ RecetteDetailPage.ctorParameters = () => [
     { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["AlertController"] },
     { type: src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__["PhotoService"] },
     { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"] },
-    { type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"] },
-    { type: _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__["NativeStorage"] }
+    { type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"] }
 ];
 RecetteDetailPage = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Component"])({
@@ -420,6 +414,23 @@ let PhotoService = class PhotoService {
             destinationType: this.camera.DestinationType.DATA_URL,
             encodingType: this.camera.EncodingType.JPEG,
             mediaType: this.camera.MediaType.PICTURE
+        };
+        return this.camera.getPicture(options);
+    }
+    /**
+     * Upload picture from library
+     * @returns Promise<string>
+     */
+    uploadPicture() {
+        const options = {
+            quality: 50,
+            targetHeight: 200,
+            targetWidth: 200,
+            correctOrientation: true,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE,
+            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
         };
         return this.camera.getPicture(options);
     }
@@ -573,10 +584,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecettesService", function() { return RecettesService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "mrSG");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
+
 
 
 let RecettesService = class RecettesService {
-    constructor() {
+    constructor(toastController) {
+        this.toastController = toastController;
         this.recettes = [
             {
                 id: 'cassoulet',
@@ -607,11 +621,42 @@ let RecettesService = class RecettesService {
         ];
     }
     /**
+     * Créer une nouvelle recette
+     * @param formgroup : Recette à créer
+     */
+    createRecette(formgroup, image) {
+        const recette = {
+            id: formgroup.value.title.split(' ').join('_').toLowerCase(),
+            titre: formgroup.value.title,
+            image: image,
+            ingredients: formgroup.value.ingredients.split('\n'),
+            urlRecette: formgroup.value.urlRecette
+        };
+        if (window.localStorage.getItem(recette.id) === null) {
+            window.localStorage.setItem(recette.id, JSON.stringify(recette));
+            this.toastController.create({
+                message: 'Recette créée !',
+                duration: 3000
+            }).then(toast => toast.present());
+        }
+        else {
+            this.toastController.create({
+                message: 'Recette déjà existante !',
+                duration: 3000
+            }).then(toast => toast.present());
+        }
+    }
+    /**
      * Récupérer toutes les recettes
      * @returns toutes les recettes
      */
     getAllRecettes() {
-        return [...this.recettes]; // on utilise l'opérateur de décomposition (...) pour cloner le tableau
+        let recettes = [], keys = Object.keys(localStorage), i = keys.length;
+        while (i--) {
+            recettes.push(JSON.parse(localStorage.getItem(keys[i])));
+        }
+        recettes.forEach(recette => { recette.ingredients = recette.ingredients[0].split(','); });
+        return recettes;
     }
     /**
      * Récupérer une recette par son id
@@ -619,38 +664,26 @@ let RecettesService = class RecettesService {
      * @returns Recette correspondante
      */
     getRecette(recetteId) {
-        return Object.assign({}, this.recettes.find(// on utilise l'opérateur de décomposition (...) pour cloner la recette
-        // on utilise l'opérateur de décomposition (...) pour cloner la recette
-        recette => {
-            return recette.id === recetteId;
-        }));
+        return JSON.parse(window.localStorage.getItem(recetteId));
     }
     /**
      * Modifier une recette
      * @param recette : Recette à modifier
-     * @returns Recette modifiée
      */
     updateRecette(recette) {
-        this.recettes = this.recettes.map(recetteExistante => {
-            if (recetteExistante.id === recette.id) {
-                return recette;
-            }
-            return recetteExistante;
-        });
-        //TODO: mettre à jour la recette dans la base de données
+        window.localStorage.setItem(recette.id, JSON.stringify(recette));
     }
     /**
      * Supprimer une recette
      * @param recetteId : id de la recette à supprimer
      */
     deleteRecette(recetteId) {
-        this.recettes = this.recettes.filter(recette => {
-            return recette.id !== recetteId;
-        });
-        //TODO: supprimer la recette dans la base de données
+        window.localStorage.removeItem(recetteId);
     }
 };
-RecettesService.ctorParameters = () => [];
+RecettesService.ctorParameters = () => [
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_2__["ToastController"] }
+];
 RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
         providedIn: 'root'

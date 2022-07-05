@@ -1,16 +1,4 @@
 (function () {
-  function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-  function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-  function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-  function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-  function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-  function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
   function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
   function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
@@ -453,20 +441,12 @@
       var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
       /*! @ionic-native/in-app-browser/ngx */
       "m/P+");
-      /* harmony import */
-
-
-      var _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
-      /*! @ionic-native/native-storage/ngx */
-      "M2ZX");
 
       var RecetteDetailPage = /*#__PURE__*/function () {
         function RecetteDetailPage(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
         photoService, // Composant pour prendre une photo
         toastController, // Controlleur pour créer un toast
-        inAppBrowser, // Composant pour ouvrir une page dans un navigateur
-        nativeStorage // Composant pour stocker des données
-        ) {
+        inAppBrowser) {
           _classCallCheck(this, RecetteDetailPage);
 
           this.activatedRoute = activatedRoute;
@@ -476,7 +456,6 @@
           this.photoService = photoService;
           this.toastController = toastController;
           this.inAppBrowser = inAppBrowser;
-          this.nativeStorage = nativeStorage;
         }
 
         _createClass(RecetteDetailPage, [{
@@ -591,8 +570,6 @@
           type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"]
         }, {
           type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"]
-        }, {
-          type: _ionic_native_native_storage_ngx__WEBPACK_IMPORTED_MODULE_9__["NativeStorage"]
         }];
       };
 
@@ -770,6 +747,26 @@
               destinationType: this.camera.DestinationType.DATA_URL,
               encodingType: this.camera.EncodingType.JPEG,
               mediaType: this.camera.MediaType.PICTURE
+            };
+            return this.camera.getPicture(options);
+          }
+          /**
+           * Upload picture from library
+           * @returns Promise<string>
+           */
+
+        }, {
+          key: "uploadPicture",
+          value: function uploadPicture() {
+            var options = {
+              quality: 50,
+              targetHeight: 200,
+              targetWidth: 200,
+              correctOrientation: true,
+              destinationType: this.camera.DestinationType.DATA_URL,
+              encodingType: this.camera.EncodingType.JPEG,
+              mediaType: this.camera.MediaType.PICTURE,
+              sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
             };
             return this.camera.getPicture(options);
           }
@@ -952,11 +949,18 @@
       var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
       /*! @angular/core */
       "fXoL");
+      /* harmony import */
+
+
+      var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! @ionic/angular */
+      "TEn/");
 
       var RecettesService = /*#__PURE__*/function () {
-        function RecettesService() {
+        function RecettesService(toastController) {
           _classCallCheck(this, RecettesService);
 
+          this.toastController = toastController;
           this.recettes = [{
             id: 'cassoulet',
             titre: 'Cassoulet Toulousain',
@@ -982,15 +986,59 @@
           }];
         }
         /**
-         * Récupérer toutes les recettes
-         * @returns toutes les recettes
+         * Créer une nouvelle recette
+         * @param formgroup : Recette à créer
          */
 
 
         _createClass(RecettesService, [{
+          key: "createRecette",
+          value: function createRecette(formgroup, image) {
+            var recette = {
+              id: formgroup.value.title.split(' ').join('_').toLowerCase(),
+              titre: formgroup.value.title,
+              image: image,
+              ingredients: formgroup.value.ingredients.split('\n'),
+              urlRecette: formgroup.value.urlRecette
+            };
+
+            if (window.localStorage.getItem(recette.id) === null) {
+              window.localStorage.setItem(recette.id, JSON.stringify(recette));
+              this.toastController.create({
+                message: 'Recette créée !',
+                duration: 3000
+              }).then(function (toast) {
+                return toast.present();
+              });
+            } else {
+              this.toastController.create({
+                message: 'Recette déjà existante !',
+                duration: 3000
+              }).then(function (toast) {
+                return toast.present();
+              });
+            }
+          }
+          /**
+           * Récupérer toutes les recettes
+           * @returns toutes les recettes
+           */
+
+        }, {
           key: "getAllRecettes",
           value: function getAllRecettes() {
-            return _toConsumableArray(this.recettes); // on utilise l'opérateur de décomposition (...) pour cloner le tableau
+            var recettes = [],
+                keys = Object.keys(localStorage),
+                i = keys.length;
+
+            while (i--) {
+              recettes.push(JSON.parse(localStorage.getItem(keys[i])));
+            }
+
+            recettes.forEach(function (recette) {
+              recette.ingredients = recette.ingredients[0].split(',');
+            });
+            return recettes;
           }
           /**
            * Récupérer une recette par son id
@@ -1001,28 +1049,17 @@
         }, {
           key: "getRecette",
           value: function getRecette(recetteId) {
-            return Object.assign({}, this.recettes.find( // on utilise l'opérateur de décomposition (...) pour cloner la recette
-            // on utilise l'opérateur de décomposition (...) pour cloner la recette
-            function (recette) {
-              return recette.id === recetteId;
-            }));
+            return JSON.parse(window.localStorage.getItem(recetteId));
           }
           /**
            * Modifier une recette
            * @param recette : Recette à modifier
-           * @returns Recette modifiée
            */
 
         }, {
           key: "updateRecette",
           value: function updateRecette(recette) {
-            this.recettes = this.recettes.map(function (recetteExistante) {
-              if (recetteExistante.id === recette.id) {
-                return recette;
-              }
-
-              return recetteExistante;
-            }); //TODO: mettre à jour la recette dans la base de données
+            window.localStorage.setItem(recette.id, JSON.stringify(recette));
           }
           /**
            * Supprimer une recette
@@ -1032,9 +1069,7 @@
         }, {
           key: "deleteRecette",
           value: function deleteRecette(recetteId) {
-            this.recettes = this.recettes.filter(function (recette) {
-              return recette.id !== recetteId;
-            }); //TODO: supprimer la recette dans la base de données
+            window.localStorage.removeItem(recetteId);
           }
         }]);
 
@@ -1042,7 +1077,9 @@
       }();
 
       RecettesService.ctorParameters = function () {
-        return [];
+        return [{
+          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_2__["ToastController"]
+        }];
       };
 
       RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({

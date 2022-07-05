@@ -406,6 +406,7 @@
           key: "ionViewWillEnter",
           value: function ionViewWillEnter() {
             this.recettes = this.RecettesService.getAllRecettes();
+            console.log(this.recettes);
           }
         }]);
 

@@ -30,12 +30,6 @@ ionic cordova plugin add cordova-plugin-inappbrowser
 npm i @ionic-native/in-app-browser --force
 ```
 
-### Peristence
-```bash
-ionic cordova plugin add cordova-plugin-nativestorage
-npm i @ionic-native/native-storage --force
-```
-
 # Start project
 ## Default (Camera won't work on browser)
 ```bash
