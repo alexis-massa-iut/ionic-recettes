@@ -58,7 +58,7 @@ export class RecetteDetailPage implements OnInit {
   /**
    * Méthode pour ouvrir le lien recette
    */
-  onConsultRecette() { // Consulter la recette
+   onOpenUrl() {
     const browser = this.inAppBrowser.create(this.recette.urlRecette);
     browser.show();
   }
@@ -82,14 +82,7 @@ export class RecetteDetailPage implements OnInit {
     }).then(alertEl => {
       alertEl.present();
     });
-    // TODO: supprimer la recette
-  }
-
-  /**
-   * Ouvrir l'url de la recette dans un nouvel ounglet
-   */
-  onOpenUrl() {
-    this.inAppBrowser.create(this.recette.urlRecette);
+    this.recettesService.deleteRecette(this.recette.id);
   }
 
 }
