@@ -221,7 +221,6 @@ let RecettesListePage = class RecettesListePage {
     }
     ionViewWillEnter() {
         this.recettes = this.RecettesService.getAllRecettes();
-        console.log(this.recettes);
     }
 };
 RecettesListePage.ctorParameters = () => [

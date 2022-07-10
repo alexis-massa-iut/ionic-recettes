@@ -17,7 +17,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       module.exports = __webpack_require__(
-      /*! C:\LocalRepository\mobile-hybride\ionic-recettes\src\main.ts */
+      /*! D:\LocalRepository\ionic-recettes\src\main.ts */
       "zUnb");
       /***/
     },
@@ -250,13 +250,25 @@
       /* harmony import */
 
 
-      var _app_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
+      var _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
+      /*! @ionic-native/camera/ngx */
+      "a/9d");
+      /* harmony import */
+
+
+      var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+      /*! @ionic-native/in-app-browser/ngx */
+      "m/P+");
+      /* harmony import */
+
+
+      var _app_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
       /*! ./app.component */
       "Sy1n");
       /* harmony import */
 
 
-      var _app_routing_module__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+      var _app_routing_module__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
       /*! ./app-routing.module */
       "vY5A");
 
@@ -265,14 +277,14 @@
       };
 
       AppModule = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-        declarations: [_app_component__WEBPACK_IMPORTED_MODULE_7__["AppComponent"]],
+        declarations: [_app_component__WEBPACK_IMPORTED_MODULE_9__["AppComponent"]],
         entryComponents: [],
-        imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"], _ionic_angular__WEBPACK_IMPORTED_MODULE_4__["IonicModule"].forRoot(), _app_routing_module__WEBPACK_IMPORTED_MODULE_8__["AppRoutingModule"]],
-        providers: [_ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_6__["StatusBar"], _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_5__["SplashScreen"], {
+        imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"], _ionic_angular__WEBPACK_IMPORTED_MODULE_4__["IonicModule"].forRoot(), _app_routing_module__WEBPACK_IMPORTED_MODULE_10__["AppRoutingModule"]],
+        providers: [_ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_6__["StatusBar"], _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_5__["SplashScreen"], _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_7__["Camera"], _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"], {
           provide: _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouteReuseStrategy"],
           useClass: _ionic_angular__WEBPACK_IMPORTED_MODULE_4__["IonicRouteStrategy"]
         }],
-        bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_7__["AppComponent"]]
+        bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_9__["AppComponent"]]
       })], AppModule);
       /***/
     },
@@ -420,6 +432,17 @@
           /*! ./recettes/recette-detail/recette-detail.module */
           "V/fZ")).then(function (m) {
             return m.RecetteDetailPageModule;
+          });
+        }
+      }, {
+        path: 'recette-create',
+        loadChildren: function loadChildren() {
+          return Promise.all(
+          /*! import() | recettes-recette-create-recette-create-module */
+          [__webpack_require__.e("common"), __webpack_require__.e("recettes-recette-create-recette-create-module")]).then(__webpack_require__.bind(null,
+          /*! ./recettes/recette-create/recette-create.module */
+          "wKX/")).then(function (m) {
+            return m.RecetteCreatePageModule;
           });
         }
       }];

@@ -277,7 +277,7 @@ let RecetteDetailPage = class RecetteDetailPage {
     /**
      * Méthode pour ouvrir le lien recette
      */
-    onConsultRecette() {
+    onOpenUrl() {
         const browser = this.inAppBrowser.create(this.recette.urlRecette);
         browser.show();
     }
@@ -301,13 +301,7 @@ let RecetteDetailPage = class RecetteDetailPage {
         }).then(alertEl => {
             alertEl.present();
         });
-        // TODO: supprimer la recette
-    }
-    /**
-     * Ouvrir l'url de la recette dans un nouvel ounglet
-     */
-    onOpenUrl() {
-        this.inAppBrowser.create(this.recette.urlRecette);
+        this.recettesService.deleteRecette(this.recette.id);
     }
 };
 RecetteDetailPage.ctorParameters = () => [

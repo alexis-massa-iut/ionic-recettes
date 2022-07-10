@@ -46,8 +46,8 @@ export class RecetteDetailPage implements OnInit {
       .then(ImageData => {
         this.recette.image = 'data:image/jpeg;base64,' + ImageData;
         this.recettesService.updateRecette(this.recette);
-      }
-      ).catch(error => {
+      })
+      .catch(error => {
         this.toastController.create({
           message: 'Erreur lors de la prise de photo',
           duration: 3000

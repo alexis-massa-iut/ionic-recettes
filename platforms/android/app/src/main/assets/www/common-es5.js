@@ -1,16 +1,4 @@
 (function () {
-  function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-  function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-  function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-  function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-  function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-  function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
   function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
   function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
@@ -181,7 +169,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button *ngIf=\"this.recette.urlRecette\" (click)=\"onOpenUrl()\">Voir la recette</ion-button>\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>";
       /***/
     },
 
@@ -432,24 +420,42 @@
       /* harmony import */
 
 
-      var _services_recettes_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+      var _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
       /*! ../../services/recettes/recettes.service */
-      "h/rU");
+      "mWRJ");
       /* harmony import */
 
 
-      var _ionic_angular__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+      var src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+      /*! src/app/services/photo/photo.service */
+      "bG/k");
+      /* harmony import */
+
+
+      var _ionic_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
       /*! @ionic/angular */
       "TEn/");
+      /* harmony import */
+
+
+      var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+      /*! @ionic-native/in-app-browser/ngx */
+      "m/P+");
 
       var RecetteDetailPage = /*#__PURE__*/function () {
-        function RecetteDetailPage(activatedRoute, RecettesService, Router, AlertCtrl) {
+        function RecetteDetailPage(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
+        photoService, // Composant pour prendre une photo
+        toastController, // Controlleur pour créer un toast
+        inAppBrowser) {
           _classCallCheck(this, RecetteDetailPage);
 
           this.activatedRoute = activatedRoute;
-          this.RecettesService = RecettesService;
-          this.Router = Router;
-          this.AlertCtrl = AlertCtrl;
+          this.recettesService = recettesService;
+          this.router = router;
+          this.alertCtrl = alertCtrl;
+          this.photoService = photoService;
+          this.toastController = toastController;
+          this.inAppBrowser = inAppBrowser;
         }
 
         _createClass(RecetteDetailPage, [{
@@ -460,28 +466,64 @@
             this.activatedRoute.paramMap.subscribe(function (paramMap) {
               if (!paramMap.has('recetteId')) {
                 // si pas de paramètre recetteId dans la route
-                _this.Router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
+                _this.router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
 
 
                 return;
               }
 
               var recetteId = paramMap.get('recetteId');
-              _this.recette = _this.RecettesService.getRecette(recetteId);
+              _this.recette = _this.recettesService.getRecette(recetteId);
 
               if (!_this.recette.id) {
                 // si la recette n'existe pas, redirection
-                _this.Router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
+                _this.router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
 
               }
             });
           }
+          /**
+           * Méthode pour prendre une photo
+           */
+
+        }, {
+          key: "onUpdatePicture",
+          value: function onUpdatePicture() {
+            var _this2 = this;
+
+            this.photoService.takePicture().then(function (ImageData) {
+              _this2.recette.image = 'data:image/jpeg;base64,' + ImageData;
+
+              _this2.recettesService.updateRecette(_this2.recette);
+            })["catch"](function (error) {
+              _this2.toastController.create({
+                message: 'Erreur lors de la prise de photo',
+                duration: 3000
+              }).then(function (toast) {
+                return toast.present();
+              });
+            });
+          }
+          /**
+           * Méthode pour ouvrir le lien recette
+           */
+
+        }, {
+          key: "onOpenUrl",
+          value: function onOpenUrl() {
+            var browser = this.inAppBrowser.create(this.recette.urlRecette);
+            browser.show();
+          }
+          /**
+           * Méthode pour stocker la recette dans le localStorage
+           */
+
         }, {
           key: "onDeleteRecette",
           value: function onDeleteRecette() {
-            var _this2 = this;
+            var _this3 = this;
 
-            this.AlertCtrl.create({
+            this.alertCtrl.create({
               header: 'Confirmation',
               message: 'Supprimer la recette ' + this.recette.titre,
               buttons: [{
@@ -490,14 +532,15 @@
               }, {
                 text: 'Supprimer',
                 handler: function handler() {
-                  _this2.RecettesService.deleteRecette(_this2.recette.id);
+                  _this3.recettesService.deleteRecette(_this3.recette.id);
 
-                  _this2.Router.navigate(['/recettes-liste']);
+                  _this3.router.navigate(['/recettes-liste']);
                 }
               }]
             }).then(function (alertEl) {
               alertEl.present();
             });
+            this.recettesService.deleteRecette(this.recette.id);
           }
         }]);
 
@@ -508,11 +551,17 @@
         return [{
           type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["ActivatedRoute"]
         }, {
-          type: _services_recettes_service__WEBPACK_IMPORTED_MODULE_5__["RecettesService"]
+          type: _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__["RecettesService"]
         }, {
           type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"]
         }, {
-          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_6__["AlertController"]
+          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["AlertController"]
+        }, {
+          type: src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__["PhotoService"]
+        }, {
+          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"]
+        }, {
+          type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"]
         }];
       };
 
@@ -630,23 +679,23 @@
     },
 
     /***/
-    "h/rU":
-    /*!**********************************************!*\
-      !*** ./src/app/services/recettes/recettes.service.ts ***!
-      \**********************************************/
+    "bG/k":
+    /*!*************************************************!*\
+      !*** ./src/app/services/photo/photo.service.ts ***!
+      \*************************************************/
 
-    /*! exports provided: RecettesService */
+    /*! exports provided: PhotoService */
 
     /***/
-    function hRU(module, __webpack_exports__, __webpack_require__) {
+    function bGK(module, __webpack_exports__, __webpack_require__) {
       "use strict";
 
       __webpack_require__.r(__webpack_exports__);
       /* harmony export (binding) */
 
 
-      __webpack_require__.d(__webpack_exports__, "RecettesService", function () {
-        return RecettesService;
+      __webpack_require__.d(__webpack_exports__, "PhotoService", function () {
+        return PhotoService;
       });
       /* harmony import */
 
@@ -660,67 +709,73 @@
       var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
       /*! @angular/core */
       "fXoL");
+      /* harmony import */
 
-      var RecettesService = /*#__PURE__*/function () {
-        function RecettesService() {
-          _classCallCheck(this, RecettesService);
 
-          this.recettes = [{
-            id: 'cassoulet',
-            titre: 'Cassoulet Toulousain',
-            image: 'https://img-3.journaldesfemmes.fr/rxBb0dQN_K7O2WiHKJ5NJ37v1yE=/748x499/smart/735a6b21a6fc45fa814f0ac921a3d1d2/recipe-jdf/372361.jpg',
-            ingredients: ['Haricots Secs', 'Couenne', 'Tomates', 'Saucisse', 'Cuisse de Canard']
-          }, {
-            id: 'quiche',
-            titre: 'Quiche Lorraine',
-            image: 'https://files.meilleurduchef.com/mdc/photo/recette/quiche-lorraine/quiche-lorraine-1200.jpg',
-            ingredients: ['Pâte Brisée', 'Lardons', 'Beurre', 'Oeufs', 'Crème Fraîche', 'Lait']
-          }, {
-            id: 'pizza',
-            titre: 'Pizza Regina',
-            image: 'https://img-3.journaldesfemmes.fr/w7YT75LG3R5TKLmLwyugJucwYh8=/748x499/smart/3fe7f1f6a26c4921b9f3150e129b358b/recipe-jdf/326376.jpg',
-            ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette']
-          }, {
-            id: 'tofu',
-            titre: 'Tofu Mariné',
-            image: 'https://www.aufouraumoulin.com/wp-content/uploads/2015/01/tofu_marine_grille-4.jpg',
-            ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger']
-          }];
+      var _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! @ionic-native/camera/ngx */
+      "a/9d");
+
+      var PhotoService = /*#__PURE__*/function () {
+        function PhotoService(camera) {
+          _classCallCheck(this, PhotoService);
+
+          this.camera = camera;
         }
+        /**
+         * Take a photo and return the base64 encoded data
+         * @returns Promise<string>
+         */
 
-        _createClass(RecettesService, [{
-          key: "getAllRecettes",
-          value: function getAllRecettes() {
-            return _toConsumableArray(this.recettes); // on utilise l'opérateur de décomposition (...) pour cloner le tableau
+
+        _createClass(PhotoService, [{
+          key: "takePicture",
+          value: function takePicture() {
+            var options = {
+              quality: 50,
+              targetHeight: 200,
+              targetWidth: 200,
+              correctOrientation: true,
+              destinationType: this.camera.DestinationType.DATA_URL,
+              encodingType: this.camera.EncodingType.JPEG,
+              mediaType: this.camera.MediaType.PICTURE
+            };
+            return this.camera.getPicture(options);
           }
+          /**
+           * Upload picture from library
+           * @returns Promise<string>
+           */
+
         }, {
-          key: "getRecette",
-          value: function getRecette(recetteId) {
-            return Object.assign({}, this.recettes.find( // on utilise l'opérateur de décomposition (...) pour cloner la recette
-            // on utilise l'opérateur de décomposition (...) pour cloner la recette
-            function (recette) {
-              return recette.id === recetteId;
-            }));
-          }
-        }, {
-          key: "deleteRecette",
-          value: function deleteRecette(recetteId) {
-            this.recettes = this.recettes.filter(function (recette) {
-              return recette.id !== recetteId;
-            });
+          key: "uploadPicture",
+          value: function uploadPicture() {
+            var options = {
+              quality: 50,
+              targetHeight: 200,
+              targetWidth: 200,
+              correctOrientation: true,
+              destinationType: this.camera.DestinationType.DATA_URL,
+              encodingType: this.camera.EncodingType.JPEG,
+              mediaType: this.camera.MediaType.PICTURE,
+              sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+            };
+            return this.camera.getPicture(options);
           }
         }]);
 
-        return RecettesService;
+        return PhotoService;
       }();
 
-      RecettesService.ctorParameters = function () {
-        return [];
+      PhotoService.ctorParameters = function () {
+        return [{
+          type: _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_2__["Camera"]
+        }];
       };
 
-      RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+      PhotoService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
         providedIn: 'root'
-      })], RecettesService);
+      })], PhotoService);
       /***/
     },
 
@@ -852,6 +907,176 @@
         }
       };
       var SPINNERS = spinners;
+      /***/
+    },
+
+    /***/
+    "mWRJ":
+    /*!*******************************************************!*\
+      !*** ./src/app/services/recettes/recettes.service.ts ***!
+      \*******************************************************/
+
+    /*! exports provided: RecettesService */
+
+    /***/
+    function mWRJ(module, __webpack_exports__, __webpack_require__) {
+      "use strict";
+
+      __webpack_require__.r(__webpack_exports__);
+      /* harmony export (binding) */
+
+
+      __webpack_require__.d(__webpack_exports__, "RecettesService", function () {
+        return RecettesService;
+      });
+      /* harmony import */
+
+
+      var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+      /*! tslib */
+      "mrSG");
+      /* harmony import */
+
+
+      var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+      /*! @angular/core */
+      "fXoL");
+      /* harmony import */
+
+
+      var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! @ionic/angular */
+      "TEn/");
+
+      var RecettesService = /*#__PURE__*/function () {
+        function RecettesService(toastController) {
+          _classCallCheck(this, RecettesService);
+
+          this.toastController = toastController;
+          this.recettes = [{
+            id: 'cassoulet',
+            titre: 'Cassoulet Toulousain',
+            image: 'https://img-3.journaldesfemmes.fr/rxBb0dQN_K7O2WiHKJ5NJ37v1yE=/748x499/smart/735a6b21a6fc45fa814f0ac921a3d1d2/recipe-jdf/372361.jpg',
+            ingredients: ['Haricots Secs', 'Couenne', 'Tomates', 'Saucisse', 'Cuisse de Canard']
+          }, {
+            id: 'quiche',
+            titre: 'Quiche Lorraine',
+            image: 'https://files.meilleurduchef.com/mdc/photo/recette/quiche-lorraine/quiche-lorraine-1200.jpg',
+            ingredients: ['Pâte Brisée', 'Lardons', 'Beurre', 'Oeufs', 'Crème Fraîche', 'Lait']
+          }, {
+            id: 'pizza',
+            titre: 'Pizza Regina',
+            image: 'https://img-3.journaldesfemmes.fr/w7YT75LG3R5TKLmLwyugJucwYh8=/748x499/smart/3fe7f1f6a26c4921b9f3150e129b358b/recipe-jdf/326376.jpg',
+            ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette'],
+            urlRecette: 'https://cuisine.journaldesfemmes.fr/recette-pizza'
+          }, {
+            id: 'tofu',
+            titre: 'Tofu Mariné',
+            image: 'https://www.aufouraumoulin.com/wp-content/uploads/2015/01/tofu_marine_grille-4.jpg',
+            ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger'],
+            urlRecette: 'https://www.marmiton.org/recettes/recette_tofu-marine_32904.aspx'
+          }];
+        }
+        /**
+         * Créer une nouvelle recette
+         * @param formgroup : Recette à créer
+         */
+
+
+        _createClass(RecettesService, [{
+          key: "createRecette",
+          value: function createRecette(formgroup, image) {
+            var recette = {
+              id: formgroup.value.title.split(' ').join('_').toLowerCase(),
+              titre: formgroup.value.title,
+              image: image,
+              ingredients: formgroup.value.ingredients.split('\n'),
+              urlRecette: formgroup.value.urlRecette
+            };
+
+            if (window.localStorage.getItem(recette.id) === null) {
+              window.localStorage.setItem(recette.id, JSON.stringify(recette));
+              this.toastController.create({
+                message: 'Recette créée !',
+                duration: 3000
+              }).then(function (toast) {
+                return toast.present();
+              });
+            } else {
+              this.toastController.create({
+                message: 'Recette déjà existante !',
+                duration: 3000
+              }).then(function (toast) {
+                return toast.present();
+              });
+            }
+          }
+          /**
+           * Récupérer toutes les recettes
+           * @returns toutes les recettes
+           */
+
+        }, {
+          key: "getAllRecettes",
+          value: function getAllRecettes() {
+            var recettes = [],
+                keys = Object.keys(localStorage),
+                i = keys.length;
+
+            while (i--) {
+              recettes.push(JSON.parse(localStorage.getItem(keys[i])));
+            }
+
+            recettes.forEach(function (recette) {
+              recette.ingredients = recette.ingredients[0].split(',');
+            });
+            return recettes;
+          }
+          /**
+           * Récupérer une recette par son id
+           * @param recetteId : id de la recette à récupérer
+           * @returns Recette correspondante
+           */
+
+        }, {
+          key: "getRecette",
+          value: function getRecette(recetteId) {
+            return JSON.parse(window.localStorage.getItem(recetteId));
+          }
+          /**
+           * Modifier une recette
+           * @param recette : Recette à modifier
+           */
+
+        }, {
+          key: "updateRecette",
+          value: function updateRecette(recette) {
+            window.localStorage.setItem(recette.id, JSON.stringify(recette));
+          }
+          /**
+           * Supprimer une recette
+           * @param recetteId : id de la recette à supprimer
+           */
+
+        }, {
+          key: "deleteRecette",
+          value: function deleteRecette(recetteId) {
+            window.localStorage.removeItem(recetteId);
+          }
+        }]);
+
+        return RecettesService;
+      }();
+
+      RecettesService.ctorParameters = function () {
+        return [{
+          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_2__["ToastController"]
+        }];
+      };
+
+      RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+        providedIn: 'root'
+      })], RecettesService);
       /***/
     },
 

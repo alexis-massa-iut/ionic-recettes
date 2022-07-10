@@ -49,25 +49,76 @@
       var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
       /*! @angular/core */
       "fXoL");
+      /* harmony import */
+
+
+      var _ionic_angular__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+      /*! @ionic/angular */
+      "TEn/");
+      /* harmony import */
+
+
+      var src_app_services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+      /*! src/app/services/recettes/recettes.service */
+      "mWRJ");
 
       var RecetteItemComponent = /*#__PURE__*/function () {
-        function RecetteItemComponent() {
+        function RecetteItemComponent(recettesService, alertController) {
           _classCallCheck(this, RecetteItemComponent);
+
+          this.recettesService = recettesService;
+          this.alertController = alertController;
         }
 
         _createClass(RecetteItemComponent, [{
           key: "ngOnInit",
           value: function ngOnInit() {}
+          /**
+           * Supprimer une recette
+           */
+
+        }, {
+          key: "onDeleteRecette",
+          value: function onDeleteRecette() {
+            var _this = this;
+
+            this.alertController.create({
+              header: 'Confirmation',
+              message: "Voulez-vous vraiment supprimer la recette ".concat(this.recette.titre),
+              buttons: [{
+                text: 'Annuler',
+                role: 'cancel',
+                handler: function handler() {
+                  return _this.ionItemSliding.close();
+                }
+              }, {
+                text: 'Supprimer',
+                handler: function handler() {
+                  return _this.recettesService.deleteRecette(_this.recette.id);
+                }
+              }]
+            }).then(function (alert) {
+              return alert.present();
+            });
+          }
         }]);
 
         return RecetteItemComponent;
       }();
 
       RecetteItemComponent.ctorParameters = function () {
-        return [];
+        return [{
+          type: src_app_services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__["RecettesService"]
+        }, {
+          type: _ionic_angular__WEBPACK_IMPORTED_MODULE_4__["AlertController"]
+        }];
       };
 
       RecetteItemComponent.propDecorators = {
+        ionItemSliding: [{
+          type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ViewChild"],
+          args: ['ionItemSliding']
+        }],
         recette: [{
           type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Input"]
         }]
@@ -187,7 +238,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-item  [routerLink]=\"['/recette-detail', recette.id]\">\n  <ion-avatar slot=\"start\">\n    <ion-img [src]=\"recette.image\"></ion-img>\n  </ion-avatar>\n  <ion-label>{{ recette.titre }}</ion-label>\n</ion-item>\n";
+      __webpack_exports__["default"] = "<ion-item-sliding>\n  <ion-item [routerLink]=\"['/recette-detail', recette.id]\">\n    <ion-avatar slot=\"start\">\n      <ion-img [src]=\"recette.image\"></ion-img>\n    </ion-avatar>\n    <ion-label>{{ recette.titre }}</ion-label>\n  </ion-item>\n  <ion-item-options side=\"end\">\n    <ion-item-option color=\"danger\" (click)=\"onDeleteRecette()\">\n      <ion-icon name=\"trash\"></ion-icon>\n    </ion-item-option>\n  </ion-item-options>\n</ion-item-sliding>";
       /***/
     },
 
@@ -207,7 +258,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-title>Mes Recettes Favorites</ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n  <app-recette-item *ngFor=\"let uneRecette of recettes\" [recette]=\"uneRecette\"></app-recette-item>\n  </ion-list>\n</ion-content>\n";
+      __webpack_exports__["default"] = "<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-title>Mes Recettes Favorites</ion-title>\n    <ion-button slot=\"primary\" [routerLink]=\"['/recette-create']\">\n      <ion-icon name=\"add\"></ion-icon> Créer une Recette\n    </ion-button>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-list>\n    <app-recette-item *ngFor=\"let uneRecette of recettes\" [recette]=\"uneRecette\"></app-recette-item>\n  </ion-list>\n</ion-content>";
       /***/
     },
 
@@ -337,17 +388,16 @@
       /* harmony import */
 
 
-      var _services_recettes_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+      var _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
       /*! ../../services/recettes/recettes.service */
-      "h/rU");
+      "mWRJ");
 
       var RecettesListePage = /*#__PURE__*/function () {
         function RecettesListePage(RecettesService) {
           _classCallCheck(this, RecettesListePage);
 
           this.RecettesService = RecettesService;
-        } // private crée un attribut dans la classe
-
+        }
 
         _createClass(RecettesListePage, [{
           key: "ngOnInit",
@@ -364,7 +414,7 @@
 
       RecettesListePage.ctorParameters = function () {
         return [{
-          type: _services_recettes_service__WEBPACK_IMPORTED_MODULE_4__["RecettesService"]
+          type: _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_4__["RecettesService"]
         }];
       };
 

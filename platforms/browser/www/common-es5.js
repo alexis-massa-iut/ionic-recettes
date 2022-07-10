@@ -509,8 +509,8 @@
            */
 
         }, {
-          key: "onConsultRecette",
-          value: function onConsultRecette() {
+          key: "onOpenUrl",
+          value: function onOpenUrl() {
             var browser = this.inAppBrowser.create(this.recette.urlRecette);
             browser.show();
           }
@@ -539,16 +539,8 @@
               }]
             }).then(function (alertEl) {
               alertEl.present();
-            }); // TODO: supprimer la recette
-          }
-          /**
-           * Ouvrir l'url de la recette dans un nouvel ounglet
-           */
-
-        }, {
-          key: "onOpenUrl",
-          value: function onOpenUrl() {
-            this.inAppBrowser.create(this.recette.urlRecette);
+            });
+            this.recettesService.deleteRecette(this.recette.id);
           }
         }]);
 

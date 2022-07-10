@@ -267,7 +267,8 @@ let RecetteDetailPage = class RecetteDetailPage {
             .then(ImageData => {
             this.recette.image = 'data:image/jpeg;base64,' + ImageData;
             this.recettesService.updateRecette(this.recette);
-        }).catch(error => {
+        })
+            .catch(error => {
             this.toastController.create({
                 message: 'Erreur lors de la prise de photo',
                 duration: 3000
@@ -277,7 +278,7 @@ let RecetteDetailPage = class RecetteDetailPage {
     /**
      * Méthode pour ouvrir le lien recette
      */
-    onConsultRecette() {
+    onOpenUrl() {
         const browser = this.inAppBrowser.create(this.recette.urlRecette);
         browser.show();
     }
@@ -301,13 +302,7 @@ let RecetteDetailPage = class RecetteDetailPage {
         }).then(alertEl => {
             alertEl.present();
         });
-        // TODO: supprimer la recette
-    }
-    /**
-     * Ouvrir l'url de la recette dans un nouvel ounglet
-     */
-    onOpenUrl() {
-        this.inAppBrowser.create(this.recette.urlRecette);
+        this.recettesService.deleteRecette(this.recette.id);
     }
 };
 RecetteDetailPage.ctorParameters = () => [

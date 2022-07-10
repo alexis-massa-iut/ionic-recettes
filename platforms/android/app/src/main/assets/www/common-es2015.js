@@ -78,7 +78,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ion-header>\n  <ion-toolbar color=\"primary\">\n    <ion-buttons slot=\"start\">\n      <ion-back-button defaultHref=\"/recettes-liste\"></ion-back-button>\n    </ion-buttons>\n    <ion-title>{{recette.titre}}</ion-title>\n    <ion-buttons slot=\"primary\">\n      <ion-button *ngIf=\"this.recette.urlRecette\" (click)=\"onOpenUrl()\">Voir la recette</ion-button>\n      <ion-button (click)=\"onUpdatePicture();\">\n        <ion-icon name=\"camera\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n      <ion-button (click)=\"onDeleteRecette();\">\n        <ion-icon name=\"trash\" slot=\"icon-only\"></ion-icon>\n      </ion-button>\n    </ion-buttons>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-grid class=\"ion-no-padding\">\n    <ion-row>\n      <ion-col class=\"ion-no-padding\">\n        <ion-img [src]=\"recette.image\"></ion-img>\n      </ion-col>\n\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <h1 class=\"ion-text-center\">{{recette.titre}}</h1>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col>\n        <ion-list>\n          <ion-item *ngFor=\"let ingredient of recette.ingredients\">\n            {{ ingredient }}\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>");
 
 /***/ }),
 
@@ -220,8 +220,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _recette_detail_page_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./recette-detail.page.scss */ "92AE");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "tyNb");
-/* harmony import */ var _services_recettes_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/recettes/recettes.service */ "h/rU");
-/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
+/* harmony import */ var _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/recettes/recettes.service */ "mWRJ");
+/* harmony import */ var src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/services/photo/photo.service */ "bG/k");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
+/* harmony import */ var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @ionic-native/in-app-browser/ngx */ "m/P+");
+
+
 
 
 
@@ -230,27 +234,59 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let RecetteDetailPage = class RecetteDetailPage {
-    constructor(activatedRoute, RecettesService, Router, AlertCtrl) {
+    constructor(activatedRoute, recettesService, router, alertCtrl, // Controlleur pour créer une alerte
+    photoService, // Composant pour prendre une photo
+    toastController, // Controlleur pour créer un toast
+    inAppBrowser) {
         this.activatedRoute = activatedRoute;
-        this.RecettesService = RecettesService;
-        this.Router = Router;
-        this.AlertCtrl = AlertCtrl;
+        this.recettesService = recettesService;
+        this.router = router;
+        this.alertCtrl = alertCtrl;
+        this.photoService = photoService;
+        this.toastController = toastController;
+        this.inAppBrowser = inAppBrowser;
     }
     ngOnInit() {
         this.activatedRoute.paramMap.subscribe(paramMap => {
             if (!paramMap.has('recetteId')) { // si pas de paramètre recetteId dans la route
-                this.Router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
+                this.router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
                 return;
             }
             const recetteId = paramMap.get('recetteId');
-            this.recette = this.RecettesService.getRecette(recetteId);
+            this.recette = this.recettesService.getRecette(recetteId);
             if (!this.recette.id) { // si la recette n'existe pas, redirection
-                this.Router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
+                this.router.navigate(['/recettes-liste']); // on redirige sur la page des recettes
             }
         });
     }
+    /**
+     * Méthode pour prendre une photo
+     */
+    onUpdatePicture() {
+        this.photoService.takePicture()
+            .then(ImageData => {
+            this.recette.image = 'data:image/jpeg;base64,' + ImageData;
+            this.recettesService.updateRecette(this.recette);
+        })
+            .catch(error => {
+            this.toastController.create({
+                message: 'Erreur lors de la prise de photo',
+                duration: 3000
+            }).then(toast => toast.present());
+        });
+    }
+    /**
+     * Méthode pour ouvrir le lien recette
+     */
+    onOpenUrl() {
+        const browser = this.inAppBrowser.create(this.recette.urlRecette);
+        browser.show();
+    }
+    /**
+     * Méthode pour stocker la recette dans le localStorage
+     */
     onDeleteRecette() {
-        this.AlertCtrl.create({
+        this.alertCtrl.create({
             header: 'Confirmation',
             message: 'Supprimer la recette ' + this.recette.titre,
             buttons: [
@@ -258,21 +294,25 @@ let RecetteDetailPage = class RecetteDetailPage {
                 {
                     text: 'Supprimer',
                     handler: () => {
-                        this.RecettesService.deleteRecette(this.recette.id);
-                        this.Router.navigate(['/recettes-liste']);
+                        this.recettesService.deleteRecette(this.recette.id);
+                        this.router.navigate(['/recettes-liste']);
                     }
                 }
             ]
         }).then(alertEl => {
             alertEl.present();
         });
+        this.recettesService.deleteRecette(this.recette.id);
     }
 };
 RecetteDetailPage.ctorParameters = () => [
     { type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["ActivatedRoute"] },
-    { type: _services_recettes_service__WEBPACK_IMPORTED_MODULE_5__["RecettesService"] },
+    { type: _services_recettes_recettes_service__WEBPACK_IMPORTED_MODULE_5__["RecettesService"] },
     { type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"] },
-    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_6__["AlertController"] }
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["AlertController"] },
+    { type: src_app_services_photo_photo_service__WEBPACK_IMPORTED_MODULE_6__["PhotoService"] },
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"] },
+    { type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_8__["InAppBrowser"] }
 ];
 RecetteDetailPage = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Component"])({
@@ -336,71 +376,68 @@ const detachComponent = (delegate, element) => {
 
 /***/ }),
 
-/***/ "h/rU":
-/*!**********************************************!*\
-  !*** ./src/app/services/recettes/recettes.service.ts ***!
-  \**********************************************/
-/*! exports provided: RecettesService */
+/***/ "bG/k":
+/*!*************************************************!*\
+  !*** ./src/app/services/photo/photo.service.ts ***!
+  \*************************************************/
+/*! exports provided: PhotoService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecettesService", function() { return RecettesService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PhotoService", function() { return PhotoService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "mrSG");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/camera/ngx */ "a/9d");
 
 
-let RecettesService = class RecettesService {
-    constructor() {
-        this.recettes = [
-            {
-                id: 'cassoulet',
-                titre: 'Cassoulet Toulousain',
-                image: 'https://img-3.journaldesfemmes.fr/rxBb0dQN_K7O2WiHKJ5NJ37v1yE=/748x499/smart/735a6b21a6fc45fa814f0ac921a3d1d2/recipe-jdf/372361.jpg',
-                ingredients: ['Haricots Secs', 'Couenne', 'Tomates', 'Saucisse', 'Cuisse de Canard']
-            },
-            {
-                id: 'quiche',
-                titre: 'Quiche Lorraine',
-                image: 'https://files.meilleurduchef.com/mdc/photo/recette/quiche-lorraine/quiche-lorraine-1200.jpg',
-                ingredients: ['Pâte Brisée', 'Lardons', 'Beurre', 'Oeufs', 'Crème Fraîche', 'Lait']
-            },
-            {
-                id: 'pizza',
-                titre: 'Pizza Regina',
-                image: 'https://img-3.journaldesfemmes.fr/w7YT75LG3R5TKLmLwyugJucwYh8=/748x499/smart/3fe7f1f6a26c4921b9f3150e129b358b/recipe-jdf/326376.jpg',
-                ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette']
-            },
-            {
-                id: 'tofu',
-                titre: 'Tofu Mariné',
-                image: 'https://www.aufouraumoulin.com/wp-content/uploads/2015/01/tofu_marine_grille-4.jpg',
-                ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger']
-            },
-        ];
+
+let PhotoService = class PhotoService {
+    constructor(camera) {
+        this.camera = camera;
     }
-    getAllRecettes() {
-        return [...this.recettes]; // on utilise l'opérateur de décomposition (...) pour cloner le tableau
+    /**
+     * Take a photo and return the base64 encoded data
+     * @returns Promise<string>
+     */
+    takePicture() {
+        const options = {
+            quality: 50,
+            targetHeight: 200,
+            targetWidth: 200,
+            correctOrientation: true,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE
+        };
+        return this.camera.getPicture(options);
     }
-    getRecette(recetteId) {
-        return Object.assign({}, this.recettes.find(// on utilise l'opérateur de décomposition (...) pour cloner la recette
-        // on utilise l'opérateur de décomposition (...) pour cloner la recette
-        recette => {
-            return recette.id === recetteId;
-        }));
-    }
-    deleteRecette(recetteId) {
-        this.recettes = this.recettes.filter(recette => {
-            return recette.id !== recetteId;
-        });
+    /**
+     * Upload picture from library
+     * @returns Promise<string>
+     */
+    uploadPicture() {
+        const options = {
+            quality: 50,
+            targetHeight: 200,
+            targetWidth: 200,
+            correctOrientation: true,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            encodingType: this.camera.EncodingType.JPEG,
+            mediaType: this.camera.MediaType.PICTURE,
+            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+        };
+        return this.camera.getPicture(options);
     }
 };
-RecettesService.ctorParameters = () => [];
-RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+PhotoService.ctorParameters = () => [
+    { type: _ionic_native_camera_ngx__WEBPACK_IMPORTED_MODULE_2__["Camera"] }
+];
+PhotoService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
         providedIn: 'root'
     })
-], RecettesService);
+], PhotoService);
 
 
 
@@ -525,6 +562,128 @@ const spinners = {
 };
 const SPINNERS = spinners;
 
+
+
+
+/***/ }),
+
+/***/ "mWRJ":
+/*!*******************************************************!*\
+  !*** ./src/app/services/recettes/recettes.service.ts ***!
+  \*******************************************************/
+/*! exports provided: RecettesService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecettesService", function() { return RecettesService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "mrSG");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
+
+
+
+let RecettesService = class RecettesService {
+    constructor(toastController) {
+        this.toastController = toastController;
+        this.recettes = [
+            {
+                id: 'cassoulet',
+                titre: 'Cassoulet Toulousain',
+                image: 'https://img-3.journaldesfemmes.fr/rxBb0dQN_K7O2WiHKJ5NJ37v1yE=/748x499/smart/735a6b21a6fc45fa814f0ac921a3d1d2/recipe-jdf/372361.jpg',
+                ingredients: ['Haricots Secs', 'Couenne', 'Tomates', 'Saucisse', 'Cuisse de Canard']
+            },
+            {
+                id: 'quiche',
+                titre: 'Quiche Lorraine',
+                image: 'https://files.meilleurduchef.com/mdc/photo/recette/quiche-lorraine/quiche-lorraine-1200.jpg',
+                ingredients: ['Pâte Brisée', 'Lardons', 'Beurre', 'Oeufs', 'Crème Fraîche', 'Lait']
+            },
+            {
+                id: 'pizza',
+                titre: 'Pizza Regina',
+                image: 'https://img-3.journaldesfemmes.fr/w7YT75LG3R5TKLmLwyugJucwYh8=/748x499/smart/3fe7f1f6a26c4921b9f3150e129b358b/recipe-jdf/326376.jpg',
+                ingredients: ['Pâte à Pizza', 'Jambon', 'Mozzarella', 'Champignons', 'Sauce Tomate', 'Roquette'],
+                urlRecette: 'https://cuisine.journaldesfemmes.fr/recette-pizza'
+            },
+            {
+                id: 'tofu',
+                titre: 'Tofu Mariné',
+                image: 'https://www.aufouraumoulin.com/wp-content/uploads/2015/01/tofu_marine_grille-4.jpg',
+                ingredients: ['Tofu Nature', 'Sauce Soja', 'Gingembre', 'Huile de Tournesol', 'Besoin Vital de Manger'],
+                urlRecette: 'https://www.marmiton.org/recettes/recette_tofu-marine_32904.aspx'
+            },
+        ];
+    }
+    /**
+     * Créer une nouvelle recette
+     * @param formgroup : Recette à créer
+     */
+    createRecette(formgroup, image) {
+        const recette = {
+            id: formgroup.value.title.split(' ').join('_').toLowerCase(),
+            titre: formgroup.value.title,
+            image: image,
+            ingredients: formgroup.value.ingredients.split('\n'),
+            urlRecette: formgroup.value.urlRecette
+        };
+        if (window.localStorage.getItem(recette.id) === null) {
+            window.localStorage.setItem(recette.id, JSON.stringify(recette));
+            this.toastController.create({
+                message: 'Recette créée !',
+                duration: 3000
+            }).then(toast => toast.present());
+        }
+        else {
+            this.toastController.create({
+                message: 'Recette déjà existante !',
+                duration: 3000
+            }).then(toast => toast.present());
+        }
+    }
+    /**
+     * Récupérer toutes les recettes
+     * @returns toutes les recettes
+     */
+    getAllRecettes() {
+        let recettes = [], keys = Object.keys(localStorage), i = keys.length;
+        while (i--) {
+            recettes.push(JSON.parse(localStorage.getItem(keys[i])));
+        }
+        recettes.forEach(recette => { recette.ingredients = recette.ingredients[0].split(','); });
+        return recettes;
+    }
+    /**
+     * Récupérer une recette par son id
+     * @param recetteId : id de la recette à récupérer
+     * @returns Recette correspondante
+     */
+    getRecette(recetteId) {
+        return JSON.parse(window.localStorage.getItem(recetteId));
+    }
+    /**
+     * Modifier une recette
+     * @param recette : Recette à modifier
+     */
+    updateRecette(recette) {
+        window.localStorage.setItem(recette.id, JSON.stringify(recette));
+    }
+    /**
+     * Supprimer une recette
+     * @param recetteId : id de la recette à supprimer
+     */
+    deleteRecette(recetteId) {
+        window.localStorage.removeItem(recetteId);
+    }
+};
+RecettesService.ctorParameters = () => [
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_2__["ToastController"] }
+];
+RecettesService = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+        providedIn: 'root'
+    })
+], RecettesService);
 
 
 
